@@ -1,9 +1,9 @@
 from __future__ import (absolute_import, division, print_function)
+
 __metaclass__ = type
 
-
 from ansible.errors import AnsibleError
-from ansible.module_utils.six.moves.urllib.error import HTTPError, URLError
+# noinspection PyProtectedMember
 from ansible.module_utils._text import to_text
 from ansible.module_utils.urls import open_url, ConnectionError, SSLValidationError
 from ansible.plugins.lookup import LookupBase
@@ -12,14 +12,13 @@ try:
     from __main__ import display
 except ImportError:
     from ansible.utils.display import Display
+
     display = Display()
 
 from github import Github
 
-print("BLA")
 
 class LookupModule(LookupBase):
-
     def run(self, terms, variables=None, **kwargs):
         api_key = kwargs.get('api_key', True)
         login = kwargs.get('login', True)
@@ -27,13 +26,14 @@ class LookupModule(LookupBase):
 
         ret = []
         for key in g.get_user(login).get_keys():
-            ret.append(key)
+            ret.append(key.key)
+            # ret.append({attr: getattr(key, '_' + attr).value  for attr in ['id', 'key', 'title', 'url', 'verified']})
 
-        #validate_certs = kwargs.get('validate_certs', True)
-        #split_lines = kwargs.get('split_lines', True)
-        #use_proxy = kwargs.get('use_proxy', True)
+        # validate_certs = kwargs.get('validate_certs', True)
+        # split_lines = kwargs.get('split_lines', True)
+        # use_proxy = kwargs.get('use_proxy', True)
 
-        #for term in terms:
+        # for term in terms:
         #    display.vvvv("url lookup connecting to %s" % term)
         #    try:
         #        response = open_url(term, validate_certs=validate_certs, use_proxy=use_proxy)
